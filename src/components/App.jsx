@@ -68,10 +68,10 @@ export default function App() {
             </IconButton>
           </Paper>
           <Grid container spacing={2} >
-            <Grid item xs={5}>
+            <Grid item xs={6}>
               <Feed city={searchedCity}/>
             </Grid>
-            <Grid item xs={7}>
+            <Grid item xs={6}>
               <Map city={searchedCity} />
             </Grid>
           </Grid>

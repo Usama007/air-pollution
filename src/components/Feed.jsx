@@ -59,16 +59,24 @@ export default function Feed({ city }) {
     }
 
     const getWeatherbit = async (lat, lon) => {
-        const respose = await axios.get(`https://api.weatherbit.io/v2.0/history/airquality?lat=${lat}&lon=${lon}&start_date=2024-03-08&end_date=2024-03-09&tz=local&key=${apiKey}`)
-        if (respose?.status === 200) {
-            setHistoricalData([...respose?.data?.data]);
-            setloading(false)
-
-        }else{
-            setloading(false)
-
+        const today = new Date(); // Get today's date
+        const endDate = today.toISOString().split('T')[0]; // Format today's date as YYYY-MM-DD
+    
+        // Calculate the start date by subtracting 8 days from today
+        const startDate = new Date(today);
+        startDate.setDate(today.getDate() - 2);
+        const startDateString = startDate.toISOString().split('T')[0]; // Format start date as YYYY-MM-DD
+    
+        const response = await axios.get(`https://api.weatherbit.io/v2.0/history/airquality?lat=${lat}&lon=${lon}&start_date=${startDateString}&end_date=${endDate}&tz=local&key=${apiKey}`);
+    
+        if (response?.status === 200) {
+            setHistoricalData([...response?.data?.data]);
+            setloading(false);
+        } else {
+            setloading(false);
         }
     }
+    
 
 
     const getBgColor = () => {
@@ -99,8 +107,7 @@ export default function Feed({ city }) {
 
         if (value <= 4 || type === 'o3' || type === 'no2' || type === 'so2' || type === 'co') {
             return '#009966'
-
-        } else if (value >= 5 && value < 10) {
+        } else if (value >= 4 && value < 10) {
             return '#ffde33'
         } else if (value >= 10 && value < 15) {
             return '#ff9933'
