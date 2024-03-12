@@ -1,4 +1,4 @@
-import { Alert, Card, CardContent, Grid, Typography } from '@mui/material'
+import { Alert, Card, CardContent, Grid, Skeleton, Typography } from '@mui/material'
 import axios from 'axios';
 import React from 'react'
 import { useState } from 'react';
@@ -29,6 +29,8 @@ export default function Feed({ city }) {
     const [feedResponse, setfeedResponse] = useState(null)
     const [apiResponse, setapiResponse] = useState(null)
     const [historicalData, setHistoricalData] = useState(null);
+    const [loading, setloading] = useState(true)
+
 
     const apiKey = 'f4e22f28356e42a6a9536e18a55633b3';
 
@@ -39,11 +41,15 @@ export default function Feed({ city }) {
     }, [city]);
 
     const fetchData = async () => {
+        setloading(true)
         const respose = await axios.get(`https://api.waqi.info/feed/${city}/?token=e9cb8cfe77f56438efccb60cd5eb4cea4506e8ee`)
         if (respose?.status === 200) {
             setfeedResponse(respose?.data?.data)
             setapiResponse(respose?.data)
             getWeatherbit(respose?.data?.data?.city?.geo?.[0], respose?.data?.data?.city?.geo?.[1])
+        }else{
+            setloading(false)
+
         }
     }
 
@@ -51,6 +57,11 @@ export default function Feed({ city }) {
         const respose = await axios.get(`https://api.weatherbit.io/v2.0/history/airquality?lat=${lat}&lon=${lon}&start_date=2024-03-08&end_date=2024-03-09&tz=local&key=${apiKey}`)
         if (respose?.status === 200) {
             setHistoricalData(respose?.data?.data);
+            setloading(false)
+
+        }else{
+            setloading(false)
+
         }
     }
 
@@ -180,13 +191,19 @@ export default function Feed({ city }) {
         return <Bar data={data} options={options} style={{ maxHeight: 100 }} />;
     };
 
+    
+    if(loading){
+        return  <Skeleton variant="rectangular" width={'100%'} height={800} />
+    }
+
+
     if(!feedResponse?.aqi){
         return  <Alert severity="error">{apiResponse?.data}. No data found.</Alert>
     }
 
 
     return (
-        <Card sx={{height: 800}}>
+        <Card sx={{height: 800}} >
             <CardContent>
                 <Typography variant="subtitle1" gutterBottom>
                     {feedResponse?.city?.name}
