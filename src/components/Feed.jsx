@@ -46,7 +46,7 @@ export default function Feed({ city }) {
         if (respose?.status === 200) {
             setfeedResponse(respose?.data?.data)
             setapiResponse(respose?.data)
-            if(respose?.data?.data?.geo){
+            if(respose?.data?.data?.city){
                 getWeatherbit(respose?.data?.data?.city?.geo?.[0], respose?.data?.data?.city?.geo?.[1])
 
             }else{
@@ -61,7 +61,7 @@ export default function Feed({ city }) {
     const getWeatherbit = async (lat, lon) => {
         const respose = await axios.get(`https://api.weatherbit.io/v2.0/history/airquality?lat=${lat}&lon=${lon}&start_date=2024-03-08&end_date=2024-03-09&tz=local&key=${apiKey}`)
         if (respose?.status === 200) {
-            setHistoricalData(respose?.data?.data);
+            setHistoricalData([...respose?.data?.data]);
             setloading(false)
 
         }else{
