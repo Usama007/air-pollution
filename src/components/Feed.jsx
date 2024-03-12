@@ -46,7 +46,12 @@ export default function Feed({ city }) {
         if (respose?.status === 200) {
             setfeedResponse(respose?.data?.data)
             setapiResponse(respose?.data)
-            getWeatherbit(respose?.data?.data?.city?.geo?.[0], respose?.data?.data?.city?.geo?.[1])
+            if(respose?.data?.data?.geo){
+                getWeatherbit(respose?.data?.data?.city?.geo?.[0], respose?.data?.data?.city?.geo?.[1])
+
+            }else{
+                setloading(false)
+            }
         }else{
             setloading(false)
 
